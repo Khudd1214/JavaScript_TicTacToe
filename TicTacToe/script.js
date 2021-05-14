@@ -39,69 +39,32 @@ function updateWinCounts() {
 }
 
 function nextPlayer() {
-  //activePlayer = activePlayer === 1 ? 2 : 1;
-  if (activePlayer === 1) {
-    console.log("player 1");
-    activePlayer = 2;
-  } else if (activePlayer === 2) {
-    console.log("player 2");
-    activePlayer = 1;
-  }
+  activePlayer = activePlayer === 1 ? 2 : 1;
 }
 
 function winCondition() {
   let result = 0;
-  if (
-    playerSelection[0] === playerSelection[1] &&
-    playerSelection[1] === playerSelection[2] &&
-    playerSelection[2] !== 0
-  ) {
-    result = activePlayer;
-  } else if (
-    playerSelection[3] === playerSelection[4] &&
-    playerSelection[4] === playerSelection[5] &&
-    playerSelection[5] !== 0
-  ) {
-    result = activePlayer;
-  } else if (
-    playerSelection[6] === playerSelection[7] &&
-    playerSelection[7] === playerSelection[8] &&
-    playerSelection[8] !== 0
-  ) {
-    result = activePlayer;
-  } else if (
-    playerSelection[0] === playerSelection[3] &&
-    playerSelection[3] === playerSelection[6] &&
-    playerSelection[6] !== 0
-  ) {
-    result = activePlayer;
-  } else if (
-    playerSelection[1] === playerSelection[4] &&
-    playerSelection[4] === playerSelection[7] &&
-    playerSelection[7] !== 0
-  ) {
-    result = activePlayer;
-  } else if (
-    playerSelection[2] === playerSelection[5] &&
-    playerSelection[5] === playerSelection[8] &&
-    playerSelection[8] !== 0
-  ) {
-    result = activePlayer;
-  } else if (
-    playerSelection[0] === playerSelection[4] &&
-    playerSelection[4] === playerSelection[8] &&
-    playerSelection[8] !== 0
-  ) {
-    result = activePlayer;
-  } else if (
-    playerSelection[2] === playerSelection[4] &&
-    playerSelection[4] === playerSelection[6] &&
-    playerSelection[6] !== 0
-  ) {
-    result = activePlayer;
-  } else if (!playerSelection.includes(0)) {
-    result = 3;
-  }
+  const winConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  winConditions.forEach(function (event) {
+    const a = playerSelection[event[0]];
+    const b = playerSelection[event[1]];
+    const c = playerSelection[event[2]];
+
+    if (!playerSelection.includes(0)) {
+      result = 3; //'3' as the winner, signifying a draw
+    } else if (a === b && b === c && c !== 0) {
+      result = activePlayer; //returns the number of the active player, hence the winner.
+    }
+  });
   return result;
 }
 
@@ -110,7 +73,6 @@ function playerMove() {
     addClickEvent(gridItems[i], function () {
       playerSelection[i] = activePlayer;
       updateBoard();
-      console.log(playerSelection);
       let endCondition = winCondition() !== 0 ? true : false;
       if (endCondition) {
         if (winCondition() === 1) {
