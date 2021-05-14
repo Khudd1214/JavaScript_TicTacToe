@@ -59,10 +59,10 @@ function winCondition() {
     const b = playerSelection[event[1]];
     const c = playerSelection[event[2]];
 
-    if (!playerSelection.includes(0)) {
-      result = 3; //'3' as the winner, signifying a draw
-    } else if (a === b && b === c && c !== 0) {
+    if (a === b && b === c && c !== 0) {
       result = activePlayer; //returns the number of the active player, hence the winner.
+    } else if (!playerSelection.includes(0)) {
+      result = 3; //'3' as the winner, signifying a draw
     }
   });
   return result;
@@ -71,31 +71,42 @@ function winCondition() {
 function playerMove() {
   for (let i = 0; i < gridItems.length; i++) {
     addClickEvent(gridItems[i], function () {
-      playerSelection[i] = activePlayer;
-      updateBoard();
-      let endCondition = winCondition() !== 0 ? true : false;
-      if (endCondition) {
-        if (winCondition() === 1) {
-          playerOneWinCount++;
-          updateWinCounts();
-          message.textContent = "Player 1 Wins!";
-          playButton.textContent = "Play again?";
-          closeOverlay();
-        } else if (winCondition() === 2) {
-          playerTwoWinCount++;
-          updateWinCounts();
-          message.textContent = "Player 2 Wins!";
-          playButton.textContent = "Play again?";
-          closeOverlay();
-        } else if (winCondition() === 3) {
-          message.textContent = "Draw!";
-          playButton.textContent = "Play again?";
-          closeOverlay();
+      console.log(ifValidMove(i));
+      if (ifValidMove(i)) {
+        playerSelection[i] = activePlayer;
+        updateBoard();
+        let endCondition = winCondition() !== 0 ? true : false;
+        if (endCondition) {
+          if (winCondition() === 1) {
+            playerOneWinCount++;
+            updateWinCounts();
+            message.textContent = "Player 1 Wins!";
+            playButton.textContent = "Play again?";
+            closeOverlay();
+          } else if (winCondition() === 2) {
+            playerTwoWinCount++;
+            updateWinCounts();
+            message.textContent = "Player 2 Wins!";
+            playButton.textContent = "Play again?";
+            closeOverlay();
+          } else if (winCondition() === 3) {
+            message.textContent = "Draw!";
+            playButton.textContent = "Play again?";
+            closeOverlay();
+          }
         }
+        nextPlayer();
       }
-      nextPlayer();
     });
   }
+}
+
+function ifValidMove(playerMove) {
+  let result = true;
+  if (playerSelection[playerMove] !== 0) {
+    result = false;
+  }
+  return result;
 }
 
 function updateBoard() {
